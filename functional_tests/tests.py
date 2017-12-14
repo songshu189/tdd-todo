@@ -1,9 +1,11 @@
 import time
-import unittest
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-class NewVisitorTest(unittest.TestCase):
+from django.test import LiveServerTestCase
+
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         options = webdriver.ChromeOptions()
@@ -25,7 +27,7 @@ class NewVisitorTest(unittest.TestCase):
         # Edith has heard about a cool new online to-do app. She goes
         # to check out its homepage
 
-        self.browser.get('http://localhost:8080')
+        self.browser.get(self.live_server_url)
 
         # She notices the page title and header mention to-do lists
         assert 'To-Do' in self.browser.title, "Browser title was " + self.browser.title
@@ -68,7 +70,3 @@ class NewVisitorTest(unittest.TestCase):
         # She visits that URL - her to-do list is still there.
 
         # Satisfied, she goes back to sleep
-
-
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
