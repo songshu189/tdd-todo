@@ -99,6 +99,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.browser.quit()
 
         # Create another webdriver browser
+        self.browser = None
         self.setUp()
 
         # Francis visits the home page.  There is no sign of Edith's

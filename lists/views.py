@@ -1,14 +1,25 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 
-from lists.models import Item
+from lists.models import Item, List
 
 def home_page(request):
     return render(request, 'home.html')
 
 def new_list(request):
-    Item.objects.create(text=request.POST['item_text'])
-    return HttpResponseRedirect('/lists/the-only-list-in-the-world/')
+    list_ = List.objects.create()
+    Item.objects.create(text=request.POST['item_text'], list=list_)
+    return HttpResponseRedirect(f'/lists/{list_.id}/')
 
-def view_list(request):
-    return render(request, 'list.html', {'items': Item.objects.all(),})
+def view_list(request, list_id):
+    list_ = List.objects.get(id=list_id)
+    return render(request, 'list.html',
+        {
+        'list': list_,
+        }
+    )
+
+def add_item(request, list_id):
+    list_ = List.objects.get(id=list_id)
+    Item.objects.create(text=request.POST['item_text'], list=list_)
+    return HttpResponseRedirect(f'/lists/{list_id}/')
