@@ -1,0 +1,14 @@
+server {
+    listen 80;
+    server_name %(public_ip)s;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root %(working_folder)s;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:%(site_folder)s/%(project)s.mock;
+    }
+}

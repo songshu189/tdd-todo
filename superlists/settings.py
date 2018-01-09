@@ -123,6 +123,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 PROJECT_APP_PATH = os.path.dirname(os.path.abspath(__file__))
 PROJECT_APP = os.path.basename(PROJECT_APP_PATH)
+PROJECT = os.path.basename(BASE_DIR)
 f = os.path.join(PROJECT_APP_PATH, "local_settings.py")
 if os.path.exists(f):
     import sys
