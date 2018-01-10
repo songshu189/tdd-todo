@@ -1,8 +1,8 @@
-import random
+import re
 from fabric.contrib.files import append, exists, upload_template
-from fabric.api import cd, env, local, run, sudo
+from fabric.api import cd, env, local, run, sudo, hide
 from fabric.colors import green, yellow
-
+from fabric.context_managers import settings
 from fab_conf import FABRIC as conf
 
 
@@ -15,14 +15,17 @@ env.key_filename = conf.get("key_filename")
 env.nginx = f"/etc/nginx/sites-available/{env.project}"
 env.site_folder = f'/home/{env.user}/sites/{env.project}'
 
+# ANSI Escape sequences - VT100 / VT52
+ansi_escape = re.compile(r'(\x1b\[\?1[h|l])|(\x1b\[[m|K])|(\x1b[=|>])')
+
 def update():
     site_folder = env.site_folder
     if not exists(site_folder):
        run(f'mkdir -p {site_folder}')
     with cd(site_folder):
         _get_latest_source()
-        changed_files = run('git diff --name-only HEAD~ HEAD').splitlines()
-        print('changed_files', changed_files)
+        output = run('git diff --name-only HEAD~ HEAD')
+        changed_files = ansi_escape.sub('', output).strip().splitlines()
         if 'Pipfile' in changed_files:
            _update_pipenv()
         _update_setup_files()
@@ -42,7 +45,7 @@ def _update_pipenv():
     if not run('which pipenv'):
         run(f'pip3 install --user pipenv')
     run('pipenv install')
-    print(green('package installed'))
+    print(green('required package installed'))
 
 def _update_setup_files():
     nginx_folder = f'/etc/nginx/sites-available/{env.project}'
