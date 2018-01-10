@@ -4,7 +4,7 @@ import os
 from unittest import skip
 
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -13,6 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 # from django.test import LiveServerTestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
+MAX_WAIT = 10
 
 class FunctionalTest(StaticLiveServerTestCase):
 
@@ -39,3 +40,13 @@ class FunctionalTest(StaticLiveServerTestCase):
             self.assertIn(row_text, [row.text for row in rows])
         except TimeoutException:
             self.assertTrue(False)
+
+    def wait_for(self, fn):
+        start_time = time.time()
+        while True:
+            try:
+                return fn()
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
