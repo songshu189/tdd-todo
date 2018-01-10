@@ -1,41 +1,9 @@
-import time
-import os
-
-from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
-# from django.test import LiveServerTestCase
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from .base import FunctionalTest
 
-class NewVisitorTest(StaticLiveServerTestCase):
 
-    def setUp(self):
-        options = webdriver.ChromeOptions()
-        options.binary_location = '/usr/bin/google-chrome'
-        options.add_argument('headless')
-        options.add_argument('window-size=1366x768')
-
-        self.browser = webdriver.Chrome(chrome_options=options)
-        staging_server = os.environ.get('STAGING_SERVER')
-        if staging_server:
-            self.live_server_url = 'http://' + staging_server
-
-    def tearDown(self):
-        self.browser.quit()
-
-    def check_for_row_in_list_table(self, row_text):
-        try:
-            table = WebDriverWait(self.browser, 10).until(
-                EC.presence_of_element_located((By.ID, "id_list_table"))
-            )
-            rows = table.find_elements_by_tag_name('tr')
-            self.assertIn(row_text, [row.text for row in rows])
-        except TimeoutException:
-            self.assertTrue(False)
+class NewVisitorTest(FunctionalTest):
 
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Edith has heard about a cool new online to-do app. She goes
@@ -133,28 +101,4 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
         # Satisfied, they both go back to sleep
 
-    def test_layout_and_styling(self):
-        # Edith goes to the home page
-        self.browser.get(self.live_server_url)
         self.browser.set_window_size(1024, 768)
-
-        # She notices the input box is nicely centered
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        print(inputbox.location['x'], inputbox.size['width'])
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            512,
-            delta=10
-        )
-
-        # She starts a new list and sees the input is nicely
-        # centered there too
-        inputbox.send_keys('testing')
-        inputbox.send_keys(Keys.ENTER)
-        self.check_for_row_in_list_table('1: testing')
-        inputbox = self.browser.find_element_by_id('id_new_item')
-        self.assertAlmostEqual(
-            inputbox.location['x'] + inputbox.size['width'] / 2,
-            512,
-            delta=10
-        )
