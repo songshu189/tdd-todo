@@ -9,6 +9,7 @@ name = "pypi"
 django = "<1.12"
 selenium = "<4"
 gunicorn = "*"
+"fabric3" = "*"
 
 [requires]
 python_version = "3.6"
