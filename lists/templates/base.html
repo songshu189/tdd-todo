@@ -30,7 +30,9 @@
         {% block table %}
         {% endblock %}
         {% if errors %}
-        <div class="has-error">{{ errors }}</div>
+        <div class="form-group has-error">
+          <span class="help-block">{{ errors }}</span>
+        </div>
         {% endif %}
       </div>
     </div>
