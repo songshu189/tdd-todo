@@ -27,9 +27,9 @@
       <div class="col-md-6 col-md-offset-3">
         {% block table %}
         {% endblock %}
-        {% if errors %}
+        {% if form.errors %}
         <div class="form-group has-error">
-          <span class="help-block">{{ errors }}</span>
+          <span class="help-block">{{ form.text.errors }}</span>
         </div>
         {% endif %}
       </div>
