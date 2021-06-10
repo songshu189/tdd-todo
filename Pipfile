@@ -6,7 +6,7 @@ name = "pypi"
 [dev-packages]
 
 [packages]
-django = "<1.12"
+django = "<2.3"
 selenium = "<4"
 gunicorn = "*"
 "fabric3" = "*"
